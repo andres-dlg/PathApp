@@ -10,8 +10,6 @@ class PathManager {
 
     private val sectionsManager by lazy { SectionsManager() }
 
-    val sections by lazy { sectionsManager.sections }
-
     private var breadcrumb = arrayListOf<String>()
 
     fun addElement(tag: String) {
@@ -36,7 +34,7 @@ class PathManager {
         }
         return when {
             // 1) First scenario. Returns first fragment tag from first section
-            currentFragmentTag.isEmpty() -> sections.first().getFirstFragmentDataTag(forkTag)
+            currentFragmentTag.isEmpty() -> sectionsManager.getFirstFragmentDataTag(forkTag)
 
             // 2) Second scenario. If nextIsNotProgress is true returns first fragment with no
             // progress in current section
@@ -104,9 +102,8 @@ class PathManager {
      * Returns a section based on [fragmentTag]. For example: If the fragment with id = 5 is in the
      * section = 2, this method will return the tag corresponding to section = 2
      */
-    fun getSectionByFragmentTag(fragmentTag: String) = sections.first { section ->
-        section.fragments.any { it.tag == fragmentTag }
-    }
+    fun getSectionByFragmentTag(fragmentTag: String) =
+        sectionsManager.getSectionByFragmentTag(fragmentTag)
 
     /**
      * Returns the first fragment of the section with id = [sectionId]
@@ -123,7 +120,7 @@ class PathManager {
     /**
      * Returns the section with id = [sectionId]
      */
-    fun getSectionById(sectionId: Int) = sections.first { it.id == sectionId }
+    fun getSectionById(sectionId: Int) = sectionsManager.getSectionById(sectionId)
 
     /**
      * Returns next fragment based on [forkTag]
@@ -135,18 +132,8 @@ class PathManager {
     /**
      * Returns a Pair containing a fragment and its index within its section
      */
-    fun getFragmentAndIndex(tag: String): Pair<FragmentData, Int> {
-        lateinit var pair: Pair<FragmentData, Int>
-        sections.forEach { section ->
-            section.fragments.forEachIndexed { index, fragmentData ->
-                if (fragmentData.tag == tag) {
-                    pair = Pair(fragmentData, index)
-                    return@forEach
-                }
-            }
-        }
-        return pair
-    }
+    fun getFragmentAndIndex(tag: String): Pair<FragmentData, Int> =
+        sectionsManager.getFragmentAndIndex(tag)
 
     /**
      * Returns current section based on current fragment tag
@@ -165,4 +152,6 @@ class PathManager {
         val currentSectionId = getCurrentSection().id
         return sectionsManager.getNextNextSectionId(currentSectionId)
     }
+
+    fun getTotalSections() = sectionsManager.getTotalSections()
 }

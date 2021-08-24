@@ -40,7 +40,7 @@ class MainActivity: AppCompatActivity(), OnClickListener {
         val fragmentWeight = section.calculateFragmentWeight(fragmentData)
         val percentage =
             fragmentData.getPercentage(
-                pathProvider.sections.size,
+                pathProvider.getTotalSections(),
                 pathProvider.getSectionById(section.id).id,
                 index,
                 fragmentWeight
