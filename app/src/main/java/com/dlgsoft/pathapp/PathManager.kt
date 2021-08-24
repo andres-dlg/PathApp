@@ -1,14 +1,16 @@
 package com.dlgsoft.pathapp
 
-import com.dlgsoft.pathapp.SectionsFactory.Companion.BASE
+import com.dlgsoft.pathapp.SectionsManager.Companion.BASE
 import com.dlgsoft.pathapp.fragments.Fragment6
 import com.dlgsoft.pathapp.fragments.Fragment7
 import com.dlgsoft.pathapp.fragments.Fragment7A
 import com.dlgsoft.pathapp.fragments.Fragment8
 
-class PathProvider {
+class PathManager {
 
-    val sections by lazy { SectionsFactory.createSections() }
+    private val sectionsManager by lazy { SectionsManager() }
+
+    val sections by lazy { sectionsManager.sections }
 
     private var breadcrumb = arrayListOf<String>()
 
@@ -19,14 +21,13 @@ class PathProvider {
     /**
      * Gets first element from breadcrumb. If the list is empty it returns an empty String
      */
-    private fun getCurrentElement(): String = if (breadcrumb.isEmpty()) "" else breadcrumb[0]
-
+    private fun getCurrentFragmentTag(): String = if (breadcrumb.isEmpty()) "" else breadcrumb[0]
 
     /**
      * Gets next fragment tag taking into account the [forkTag] parameter. Some scenarios:
      */
     private fun getNextTag(forkTag: String): String {
-        val currentFragmentTag = getCurrentElement()
+        val currentFragmentTag = getCurrentFragmentTag()
         return if (currentFragmentTag.isEmpty()) {
             // 1) First scenario. Returns first fragment tag from first section
             sections.first().getFirstFragmentDataTag(forkTag)
@@ -80,15 +81,14 @@ class PathProvider {
     /**
      * Returns next section based on [sectionId]
      */
-    private fun getNextSection(sectionId: Int): Section {
-        val nextSectionIndex = sectionId + 1
-        return if (nextSectionIndex < sections.size) {
-            sections[nextSectionIndex]
-        } else {
-            sections[sectionId]
-        }
-    }
+    fun getNextSection(sectionId: Int) =
+        sectionsManager.findNextSectionFromSectionId(sectionId)
 
+    /**
+     * Returns previous section based on [sectionId]
+     */
+    fun getPreviousSection(sectionId: Int) =
+        sectionsManager.findPreviousSectionFromSectionId(sectionId)
 
     /**
      * Returns a section based on [fragmentTag]. For example: If the fragment with id = 5 is in the
@@ -103,6 +103,12 @@ class PathProvider {
      */
     fun getFirstFragmentTagBySectionId(sectionId: Int) =
         getSectionById(sectionId).getFirstFragmentDataTag(BASE)
+
+    /**
+     * Returns the last fragment of the section with id = [sectionId]
+     */
+    fun getLastFragmentTagBySectionId(sectionId: Int) =
+        getSectionById(sectionId).getLastFragmentDataTag(BASE)
 
     /**
      * Returns the section with id = [sectionId]
@@ -130,5 +136,13 @@ class PathProvider {
             }
         }
         return pair
+    }
+
+    /**
+     * Returns current section based on current fragment tag
+     */
+    fun getCurrentSection(): Section {
+        val currentFragmentTag = getCurrentFragmentTag()
+        return getSectionByFragmentTag(currentFragmentTag)
     }
 }

@@ -30,8 +30,13 @@ class Fragment4A: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val btnNext = view.findViewById<Button>(R.id.btn_next)
-        //btnNext.setOnClickListener { listener.navigateToNextFragment(false) }
         btnNext.setOnClickListener { listener.navigateToNextFragmentFork4() }
+
+        val btnFinishSection = view.findViewById<Button>(R.id.btn_finish_section)
+        btnFinishSection.setOnClickListener { listener.finishSection() }
+
+        val btnCancelSection = view.findViewById<Button>(R.id.btn_cancel_section)
+        btnCancelSection.setOnClickListener { listener.cancelSection() }
     }
 
     companion object {

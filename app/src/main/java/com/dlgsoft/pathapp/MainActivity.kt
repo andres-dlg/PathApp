@@ -5,9 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.dlgsoft.pathapp.SectionsFactory.Companion.BASE
-import com.dlgsoft.pathapp.SectionsFactory.Companion.FORK_4
-import com.dlgsoft.pathapp.SectionsFactory.Companion.FORK_7
+import com.dlgsoft.pathapp.SectionsManager.Companion.BASE
+import com.dlgsoft.pathapp.SectionsManager.Companion.FORK_4
+import com.dlgsoft.pathapp.SectionsManager.Companion.FORK_7
+import com.dlgsoft.pathapp.SectionsManager.Companion.FORK_9
 import kotlin.math.roundToInt
 
 class MainActivity: AppCompatActivity(), OnClickListener {
@@ -15,7 +16,7 @@ class MainActivity: AppCompatActivity(), OnClickListener {
     private val progressBar by lazy { findViewById<ProgressBar>(R.id.progressBar) }
     private val progress by lazy { findViewById<TextView>(R.id.progress) }
 
-    private val pathProvider by lazy { PathProvider() }
+    private val pathProvider by lazy { PathManager() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +38,7 @@ class MainActivity: AppCompatActivity(), OnClickListener {
         val percentage =
             fragmentData.getPercentage(
                 pathProvider.sections.size,
-                pathProvider.sections.indexOf(section) + 1,
+                pathProvider.getSectionById(section.id).id,
                 index,
                 fragmentWeight
             )
@@ -71,6 +72,28 @@ class MainActivity: AppCompatActivity(), OnClickListener {
         navigateToNextFragment(FORK_7)
     }
 
+    override fun navigateToNextFragmentFork9() {
+        navigateToNextFragment(FORK_9)
+    }
+
+    override fun finishSection() {
+        val currentSection = pathProvider.getCurrentSection()
+        val nextSection = pathProvider.getNextSection(currentSection.id)
+        navigateToFragment(
+            nextSection,
+            pathProvider.getFirstFragmentTagBySectionId(nextSection.id)
+        )
+    }
+
+    override fun cancelSection() {
+        val currentSection = pathProvider.getCurrentSection()
+        val previous = pathProvider.getPreviousSection(currentSection.id)
+        navigateToFragment(
+            previous,
+            pathProvider.getLastFragmentTagBySectionId(previous.id)
+        )
+    }
+
     override fun navigateToSection(id: Int) {
         navigateToFragment(
             pathProvider.getSectionById(id),
@@ -97,5 +120,8 @@ interface OnClickListener {
     fun navigateToNextFragmentBase()
     fun navigateToNextFragmentFork4()
     fun navigateToNextFragmentFork7()
+    fun navigateToNextFragmentFork9()
     fun navigateToSection(id: Int)
+    fun finishSection()
+    fun cancelSection()
 }

@@ -30,7 +30,6 @@ class Fragment2: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val btnNext = view.findViewById<Button>(R.id.btn_next)
-        //btnNext.setOnClickListener { listener.navigateToNextFragment(false) }
         btnNext.setOnClickListener { listener.navigateToNextFragmentBase() }
     }
 

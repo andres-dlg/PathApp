@@ -6,7 +6,11 @@ data class Section(
 ) {
     private fun getFirstFragmentData(forkTag: String) = fragments.first { forkTag == it.forkTag }
 
+    private fun getLastFragmentData(forkTag: String) = fragments.last { forkTag == it.forkTag }
+
     fun getFirstFragmentDataTag(forkTag: String) = getFirstFragmentData(forkTag).tag
+
+    fun getLastFragmentDataTag(forkTag: String) = getLastFragmentData(forkTag).tag
 
     fun isLastFragmentInFork(forkTag: String, forkedFragmentTag: String): Boolean {
         val forkedFragments = fragments.filter { it.forkTag == forkTag }

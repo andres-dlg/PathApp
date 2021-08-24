@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import com.dlgsoft.pathapp.OnClickListener
 import com.dlgsoft.pathapp.R
-import com.dlgsoft.pathapp.SectionsFactory.Companion.SECTION_5
+import com.dlgsoft.pathapp.SectionsManager.Companion.SECTION_5
 
 class Fragment3: Fragment() {
 
