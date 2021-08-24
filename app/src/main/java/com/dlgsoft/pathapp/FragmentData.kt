@@ -5,9 +5,12 @@ import androidx.fragment.app.Fragment
 data class FragmentData(
     val fragment: Lazy<Fragment>,
     val tag: String,
-    val forkTag: String?
+    val forkTag: String?,
+    val isNotProgress: Boolean = false
 ) {
-    fun isFork() = !forkTag.isNullOrEmpty()
+    fun isFork(): Boolean {
+        return !forkTag.isNullOrEmpty()
+    }
 
     fun getPercentage(
         sectionsQty: Int,

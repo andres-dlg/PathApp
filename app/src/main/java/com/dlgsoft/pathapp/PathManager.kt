@@ -21,35 +21,44 @@ class PathManager {
     /**
      * Gets first element from breadcrumb. If the list is empty it returns an empty String
      */
-    private fun getCurrentFragmentTag(): String = if (breadcrumb.isEmpty()) "" else breadcrumb[0]
+    private fun getCurrentFragmentTag(): String = if (breadcrumb.isEmpty()) BASE else breadcrumb[0]
 
     /**
      * Gets next fragment tag taking into account the [forkTag] parameter. Some scenarios:
      */
-    private fun getNextTag(forkTag: String): String {
+    private fun getNextTag(forkTag: String, nextIsNotProgress: Boolean): String {
         val currentFragmentTag = getCurrentFragmentTag()
-        return if (currentFragmentTag.isEmpty()) {
+        var currentSection: Section? = null
+        var fragmentData: FragmentData? = null
+        if (currentFragmentTag.isNotBlank()) {
+            currentSection = getSectionByFragmentTag(currentFragmentTag)
+            fragmentData = getFragmentAndIndex(currentFragmentTag).first
+        }
+        return when {
             // 1) First scenario. Returns first fragment tag from first section
-            sections.first().getFirstFragmentDataTag(forkTag)
-        } else {
-            val currentSection = getSectionByFragmentTag(currentFragmentTag)
-            val fragmentData = getFragmentAndIndex(currentFragmentTag).first
-            return if (!fragmentData.isFork()) {
-                // 2) Second scenario. If current fragment is not a fork returns first fragment of
-                // next section
-                getNextSection(currentSection.id).getFirstFragmentDataTag(forkTag)
-            } else {
-                if (currentSection.isLastFragmentInFork(forkTag, currentFragmentTag)) {
-                    // 3) Third scenario. If current fragment is a fork but it is the last fragment
-                    // of the fork, return first fragment of next section
-                    getNextSection(currentSection.id).getFirstFragmentDataTag(BASE)
-                } else {
-                    // 4) Forth scenario. If current fragment is a fork but it is not the last fragment
-                    // of the fork, return next fragment in the fork
-                    val nextFragmentData =
-                        currentSection.getNextFragmentInFork(forkTag, currentFragmentTag)
-                    nextFragmentData.tag
-                }
+            currentFragmentTag.isEmpty() -> sections.first().getFirstFragmentDataTag(forkTag)
+
+            // 2) Second scenario.
+            nextIsNotProgress -> currentSection!!.getFirstFragmentDataTag(forkTag)
+
+            // 2) Second scenario. If current fragment is not a fork returns first fragment of
+            // next section
+            !fragmentData!!.isFork() && !nextIsNotProgress -> getNextSection(currentSection!!.id).getFirstFragmentDataTag(
+                forkTag
+            )
+
+            // 3) Third scenario. If current fragment is a fork but it is the last fragment
+            // of the fork, return first fragment of next section
+            currentSection!!.isLastFragmentInFork(forkTag, currentFragmentTag) -> getNextSection(
+                currentSection.id
+            ).getFirstFragmentDataTag(BASE)
+
+            // 4) Forth scenario. If current fragment is a fork but it is not the last fragment
+            // of the fork, return next fragment in the fork
+            else -> {
+                val nextFragmentData =
+                    currentSection.getNextFragmentInFork(forkTag, currentFragmentTag)
+                nextFragmentData.tag
             }
         }
     }
@@ -118,8 +127,8 @@ class PathManager {
     /**
      * Returns next fragment based on [forkTag]
      */
-    fun getNextFragmentTag(forkTag: String): String {
-        return getNextTag(forkTag)
+    fun getNextFragmentTag(forkTag: String, nextIsNotProgress: Boolean): String {
+        return getNextTag(forkTag, nextIsNotProgress)
     }
 
     /**
@@ -144,5 +153,10 @@ class PathManager {
     fun getCurrentSection(): Section {
         val currentFragmentTag = getCurrentFragmentTag()
         return getSectionByFragmentTag(currentFragmentTag)
+    }
+
+    fun clearBreadcrumbFrom(tag: String) {
+        val indexOfCurrentTag = breadcrumb.indexOf(tag)
+        breadcrumb.subList(0, indexOfCurrentTag + 1).clear()
     }
 }

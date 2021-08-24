@@ -16,6 +16,7 @@ import com.dlgsoft.pathapp.fragments.Fragment8
 import com.dlgsoft.pathapp.fragments.Fragment10
 import com.dlgsoft.pathapp.fragments.Fragment9
 import com.dlgsoft.pathapp.fragments.Fragment9A
+import com.dlgsoft.pathapp.fragments.Fragment9B
 
 class SectionsManager {
 
@@ -134,6 +135,12 @@ class SectionsManager {
                         Fragment9A.TAG,
                         FORK_9
                     ),
+                    FragmentData(
+                        lazy { Fragment9B.newInstance() },
+                        Fragment9B.TAG,
+                        FORK_9_NOT_PROGRESS,
+                        true
+                    ),
                 ),
             ),
             Section(
@@ -187,6 +194,7 @@ class SectionsManager {
         const val FORK_4 = "Fork 4"
         const val FORK_7 = "Fork 7"
         const val FORK_9 = "Fork 9"
+        const val FORK_9_NOT_PROGRESS = "Fork 9 Not Progress"
 
         // Sections
         private const val SECTION_1 = 1

@@ -1,6 +1,38 @@
 <resources>
+    <!-- General -->
     <string name="app_name">PathApp</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="percentage">%f%%</string>
+
+    <!-- Buttons -->
+    <string name="next">SIGUIENTE</string>
+    <string name="next_forked">IR A FORK</string>
+    <string name="jump_to_5">SALTAR A FRAGMENT 5</string>
+    <string name="cancel_section">CANCELAR SECCIÓN</string>
+    <string name="finish_section">FINALIZAR SECCIÓN</string>
+    <string name="return_previous">VOLVER</string>
+
+    <!-- Messages -->
+    <string name="fragment_6_message">A ESTE FRAGMENT SOLO SE PODRÁ VOLVER DESDE EL FRAGMENT 7</string>
+    <string name="fragment_7_message">NO SE PODRÁ VOLVER A ESTE FRAGMENT DESDE EL FRAGMENT 8</string>
+    <string name="fragment_9_go_to_no_progress">IR A FRAGMENT QUE NO SUMA PROGRESO</string>
+
+    <!-- Fragment titles -->
+    <string name="title_fragment_1">FRAGMENT 1</string>
+    <string name="title_fragment_2">FRAGMENT 2</string>
+    <string name="title_fragment_3">FRAGMENT 3</string>
+    <string name="title_fragment_4">FRAGMENT 4</string>
+    <string name="title_fragment_4a">FRAGMENT 4A</string>
+    <string name="title_fragment_4b">FRAGMENT 4B</string>
+    <string name="title_fragment_5">FRAGMENT 5</string>
+    <string name="title_fragment_6">FRAGMENT 6</string>
+    <string name="title_fragment_7">FRAGMENT 7</string>
+    <string name="title_fragment_7a">FRAGMENT 7A</string>
+    <string name="title_fragment_7b">FRAGMENT 7B</string>
+    <string name="title_fragment_8">FRAGMENT 8</string>
+    <string name="title_fragment_9">FRAGMENT 9</string>
+    <string name="title_fragment_9a">FRAGMENT 9A</string>
+    <string name="title_fragment_9b">FRAGMENT 9B</string>
+    <string name="title_fragment_10">FRAGMENT 10</string>
+    <string name="title_fragment_11">FRAGMENT 11</string>
+    <string name="fragment_8_message">SI EL FRAGMENT ANTERIOR ERA EL FRAGMENT 7, SE VOLVERÁ AL 5.\n\nEN CAMBIO, SI FUE DESDE EL FRAGMENT 7B, SE VOLVERÁ A ÉSTE.</string>
 </resources>

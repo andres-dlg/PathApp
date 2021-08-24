@@ -24,12 +24,10 @@ data class Section(
         return forkedFragments[forkedFragmentIndex.plus(1)]
     }
 
-    fun calculateFragmentWeight(isFork: Boolean): Double {
-        return if (isFork) {
-            val counter = fragments.count { it.isFork() }
-            return 1.0 / counter
-        } else {
-            1.0
-        }
+    fun calculateFragmentWeight(fragmentData: FragmentData): Double {
+        if (fragmentData.isNotProgress) return 0.0
+        if (!fragmentData.isFork()) return 1.0
+        val fragmentsInFork = fragments.count { it.forkTag == fragmentData.forkTag }
+        return 1.0 / fragmentsInFork
     }
 }

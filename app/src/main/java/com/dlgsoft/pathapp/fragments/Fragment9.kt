@@ -31,6 +31,9 @@ class Fragment9: Fragment() {
 
         val btnNext = view.findViewById<Button>(R.id.btn_next)
         btnNext.setOnClickListener { listener.navigateToNextFragmentBase() }
+
+        val btnNoProgress = view.findViewById<Button>(R.id.btn_no_progress)
+        btnNoProgress.setOnClickListener { listener.navigateToNextFragmentFork9NoProgress() }
     }
 
     companion object {

@@ -1,20 +1,23 @@
 package com.dlgsoft.pathapp
 
 import android.animation.ObjectAnimator
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentTransaction
 import com.dlgsoft.pathapp.SectionsManager.Companion.BASE
 import com.dlgsoft.pathapp.SectionsManager.Companion.FORK_4
 import com.dlgsoft.pathapp.SectionsManager.Companion.FORK_7
 import com.dlgsoft.pathapp.SectionsManager.Companion.FORK_9
+import com.dlgsoft.pathapp.SectionsManager.Companion.FORK_9_NOT_PROGRESS
 import kotlin.math.roundToInt
 
 class MainActivity: AppCompatActivity(), OnClickListener {
 
     private val progressBar by lazy { findViewById<ProgressBar>(R.id.progressBar) }
     private val progress by lazy { findViewById<TextView>(R.id.progress) }
+    private val path by lazy { findViewById<TextView>(R.id.path) }
 
     private val pathProvider by lazy { PathManager() }
 
@@ -34,7 +37,7 @@ class MainActivity: AppCompatActivity(), OnClickListener {
         pathProvider.addElement(tag)
 
         // Calculate and show progress
-        val fragmentWeight = section.calculateFragmentWeight(fragmentData.isFork())
+        val fragmentWeight = section.calculateFragmentWeight(fragmentData)
         val percentage =
             fragmentData.getPercentage(
                 pathProvider.sections.size,
@@ -42,8 +45,11 @@ class MainActivity: AppCompatActivity(), OnClickListener {
                 index,
                 fragmentWeight
             )
-        progress.text = getString(R.string.percentage, percentage)
+        progress.text = "${String.format("%.2f", percentage)}%"
         animateProgress(percentage)
+
+        // Show current path
+        path.text = getPath(fragmentData.forkTag)
 
         // Navigate to fragment
         val fragmentTransaction = supportFragmentManager.beginTransaction()
@@ -52,11 +58,13 @@ class MainActivity: AppCompatActivity(), OnClickListener {
             R.id.container,
             fragment,
             fragmentData.tag
-        ).commit()
+        )
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+            .commit()
     }
 
-    private fun navigateToNextFragment(forkTag: String) {
-        val nextTag = pathProvider.getNextFragmentTag(forkTag)
+    private fun navigateToNextFragment(forkTag: String, nextIsNotProgress: Boolean = false) {
+        val nextTag = pathProvider.getNextFragmentTag(forkTag, nextIsNotProgress)
         navigateToFragment(pathProvider.getSectionByFragmentTag(nextTag), nextTag)
     }
 
@@ -76,6 +84,10 @@ class MainActivity: AppCompatActivity(), OnClickListener {
         navigateToNextFragment(FORK_9)
     }
 
+    override fun navigateToNextFragmentFork9NoProgress() {
+        navigateToNextFragment(FORK_9_NOT_PROGRESS, true)
+    }
+
     override fun finishSection() {
         val currentSection = pathProvider.getCurrentSection()
         val nextSection = pathProvider.getNextSection(currentSection.id)
@@ -88,9 +100,12 @@ class MainActivity: AppCompatActivity(), OnClickListener {
     override fun cancelSection() {
         val currentSection = pathProvider.getCurrentSection()
         val previous = pathProvider.getPreviousSection(currentSection.id)
+        val lastFragmentTagFromPreviousSection =
+            pathProvider.getLastFragmentTagBySectionId(previous.id)
+        pathProvider.clearBreadcrumbFrom(lastFragmentTagFromPreviousSection)
         navigateToFragment(
             previous,
-            pathProvider.getLastFragmentTagBySectionId(previous.id)
+            lastFragmentTagFromPreviousSection
         )
     }
 
@@ -101,10 +116,25 @@ class MainActivity: AppCompatActivity(), OnClickListener {
         )
     }
 
+    override fun returnToBasePath() {
+        onBackPressed()
+    }
+
     private fun animateProgress(progressValue: Double) {
         ObjectAnimator.ofInt(progressBar, "progress", progressValue.roundToInt())
             .setDuration(500)
             .start()
+    }
+
+    private fun getPath(forkTag: String?): String {
+        return when (forkTag) {
+            BASE -> "CAMINO BASE"
+            FORK_4 -> "FORK 4"
+            FORK_7 -> "FORK 7"
+            FORK_9 -> "FORK 9"
+            FORK_9_NOT_PROGRESS -> "FORK 9 - NO SUMA PROGRESO"
+            else -> ""
+        }
     }
 
     override fun onBackPressed() {
@@ -114,14 +144,4 @@ class MainActivity: AppCompatActivity(), OnClickListener {
             super.onBackPressed()
         })
     }
-}
-
-interface OnClickListener {
-    fun navigateToNextFragmentBase()
-    fun navigateToNextFragmentFork4()
-    fun navigateToNextFragmentFork7()
-    fun navigateToNextFragmentFork9()
-    fun navigateToSection(id: Int)
-    fun finishSection()
-    fun cancelSection()
 }
