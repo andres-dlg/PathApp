@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import com.dlgsoft.pathapp.OnClickListener
 import com.dlgsoft.pathapp.R
-import com.dlgsoft.pathapp.SectionsManager.Companion.SECTION_5
 
 class Fragment3: Fragment() {
 
@@ -37,7 +36,7 @@ class Fragment3: Fragment() {
         btnNextForked.setOnClickListener { listener.navigateToNextFragmentFork4() }
 
         val btnNextJump = view.findViewById<Button>(R.id.btn_next_jump)
-        btnNextJump.setOnClickListener { listener.navigateToSection(SECTION_5) }
+        btnNextJump.setOnClickListener { listener.skipNextSection() }
     }
 
     companion object {

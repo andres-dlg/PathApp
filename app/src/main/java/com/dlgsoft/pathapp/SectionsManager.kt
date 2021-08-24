@@ -187,6 +187,11 @@ class SectionsManager {
         }
     }
 
+    fun getNextNextSectionId(currentSectionId: Int): Int {
+        val currentSectionIndex = sections.indexOfFirst { it.id == currentSectionId }
+        return sections[currentSectionIndex + 2].id
+    }
+
     companion object {
 
         // Forks
@@ -201,7 +206,7 @@ class SectionsManager {
         private const val SECTION_2 = 2
         private const val SECTION_3 = 3
         private const val SECTION_4 = 4
-        const val SECTION_5 = 5
+        private const val SECTION_5 = 5
         private const val SECTION_6 = 6
         private const val SECTION_7 = 7
         private const val SECTION_8 = 8

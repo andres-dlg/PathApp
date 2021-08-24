@@ -6,7 +6,7 @@
     <!-- Buttons -->
     <string name="next">SIGUIENTE</string>
     <string name="next_forked">IR A FORK</string>
-    <string name="jump_to_5">SALTAR A FRAGMENT 5</string>
+    <string name="skip_section">SALTEAR SIGUIENTE SECCIÓN</string>
     <string name="cancel_section">CANCELAR SECCIÓN</string>
     <string name="finish_section">FINALIZAR SECCIÓN</string>
     <string name="return_previous">VOLVER</string>

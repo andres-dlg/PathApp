@@ -159,4 +159,9 @@ class PathManager {
         val indexOfCurrentTag = breadcrumb.indexOf(tag)
         breadcrumb.subList(0, indexOfCurrentTag + 1).clear()
     }
+
+    fun getNextNextSectionId(): Int {
+        val currentSectionId = getCurrentSection().id
+        return sectionsManager.getNextNextSectionId(currentSectionId)
+    }
 }

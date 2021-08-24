@@ -109,10 +109,11 @@ class MainActivity: AppCompatActivity(), OnClickListener {
         )
     }
 
-    override fun navigateToSection(id: Int) {
+    override fun skipNextSection() {
+        val nextNextSectionId = pathProvider.getNextNextSectionId()
         navigateToFragment(
-            pathProvider.getSectionById(id),
-            pathProvider.getFirstFragmentTagBySectionId(id)
+            pathProvider.getSectionById(nextNextSectionId),
+            pathProvider.getFirstFragmentTagBySectionId(nextNextSectionId)
         )
     }
 
