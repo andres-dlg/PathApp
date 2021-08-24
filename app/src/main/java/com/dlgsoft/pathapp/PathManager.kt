@@ -38,22 +38,23 @@ class PathManager {
             // 1) First scenario. Returns first fragment tag from first section
             currentFragmentTag.isEmpty() -> sections.first().getFirstFragmentDataTag(forkTag)
 
-            // 2) Second scenario.
+            // 2) Second scenario. If nextIsNotProgress is true returns first fragment with no
+            // progress in current section
             nextIsNotProgress -> currentSection!!.getFirstFragmentDataTag(forkTag)
 
-            // 2) Second scenario. If current fragment is not a fork returns first fragment of
+            // 3) Third scenario. If current fragment is not a fork returns first fragment of
             // next section
             !fragmentData!!.isFork() && !nextIsNotProgress -> getNextSection(currentSection!!.id).getFirstFragmentDataTag(
                 forkTag
             )
 
-            // 3) Third scenario. If current fragment is a fork but it is the last fragment
+            // 4) Fourth scenario. If current fragment is a fork but it is the last fragment
             // of the fork, return first fragment of next section
             currentSection!!.isLastFragmentInFork(forkTag, currentFragmentTag) -> getNextSection(
                 currentSection.id
             ).getFirstFragmentDataTag(BASE)
 
-            // 4) Forth scenario. If current fragment is a fork but it is not the last fragment
+            // 5) Fifth scenario. If current fragment is a fork but it is not the last fragment
             // of the fork, return next fragment in the fork
             else -> {
                 val nextFragmentData =
