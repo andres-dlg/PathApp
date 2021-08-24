@@ -18,6 +18,7 @@ class MainActivity: AppCompatActivity(), OnClickListener {
     private val progressBar by lazy { findViewById<ProgressBar>(R.id.progressBar) }
     private val progress by lazy { findViewById<TextView>(R.id.progress) }
     private val path by lazy { findViewById<TextView>(R.id.path) }
+    private val sectionText by lazy { findViewById<TextView>(R.id.section) }
 
     private val pathProvider by lazy { PathManager() }
 
@@ -45,11 +46,12 @@ class MainActivity: AppCompatActivity(), OnClickListener {
                 index,
                 fragmentWeight
             )
-        progress.text = "${String.format("%.2f", percentage)}%"
+        progress.text = getString(R.string.percentage, percentage)
         animateProgress(percentage)
 
         // Show current path
         path.text = getPath(fragmentData.forkTag)
+        sectionText.text = getString(R.string.section, section.id)
 
         // Navigate to fragment
         val fragmentTransaction = supportFragmentManager.beginTransaction()

@@ -1,7 +1,8 @@
 <resources>
     <!-- General -->
     <string name="app_name">PathApp</string>
-    <string name="percentage">%f%%</string>
+    <string name="percentage">%.2f%%</string>
+    <string name="section">SECCIÓN %d</string>
 
     <!-- Buttons -->
     <string name="next">SIGUIENTE</string>
