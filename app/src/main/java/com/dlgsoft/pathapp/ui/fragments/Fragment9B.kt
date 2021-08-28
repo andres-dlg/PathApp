@@ -1,4 +1,4 @@
-package com.dlgsoft.pathapp.fragments
+package com.dlgsoft.pathapp.ui.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -10,7 +10,7 @@ import android.widget.Button
 import com.dlgsoft.pathapp.OnClickListener
 import com.dlgsoft.pathapp.R
 
-class Fragment9: Fragment() {
+class Fragment9B: Fragment() {
 
     private lateinit var listener: OnClickListener
 
@@ -23,21 +23,18 @@ class Fragment9: Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_9, container, false)
+        return inflater.inflate(R.layout.fragment_9b, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val btnNext = view.findViewById<Button>(R.id.btn_next)
-        btnNext.setOnClickListener { listener.navigateToNextFragmentBase() }
-
-        val btnNoProgress = view.findViewById<Button>(R.id.btn_no_progress)
-        btnNoProgress.setOnClickListener { listener.navigateToNextFragmentFork9NoProgress() }
+        val btnReturn = view.findViewById<Button>(R.id.btn_return)
+        btnReturn.setOnClickListener { listener.returnToBasePath() }
     }
 
     companion object {
-        const val TAG = "Fragment9"
-        fun newInstance() = Fragment9()
+        const val TAG = "Fragment9B"
+        fun newInstance() = Fragment9B()
     }
 }

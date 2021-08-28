@@ -1,4 +1,4 @@
-package com.dlgsoft.pathapp
+package com.dlgsoft.pathapp.ui
 
 import android.animation.ObjectAnimator
 import android.os.Bundle
@@ -6,14 +6,10 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
-import com.dlgsoft.pathapp.SectionsManager.Companion.BASE
-import com.dlgsoft.pathapp.SectionsManager.Companion.FORK_4
-import com.dlgsoft.pathapp.SectionsManager.Companion.FORK_7
-import com.dlgsoft.pathapp.SectionsManager.Companion.FORK_9
-import com.dlgsoft.pathapp.SectionsManager.Companion.FORK_9_NOT_PROGRESS
+import com.dlgsoft.pathapp.*
 import kotlin.math.roundToInt
 
-class MainActivity: AppCompatActivity(), OnClickListener {
+class PathActivity : AppCompatActivity(), OnClickListener {
 
     private val progressBar by lazy { findViewById<ProgressBar>(R.id.progressBar) }
     private val progress by lazy { findViewById<TextView>(R.id.progress) }
@@ -25,7 +21,7 @@ class MainActivity: AppCompatActivity(), OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        navigateToNextFragment(BASE)
+        navigateToNextFragment(PathType.BASE)
     }
 
     private fun navigateToFragment(section: Section, tag: String) {
@@ -40,62 +36,62 @@ class MainActivity: AppCompatActivity(), OnClickListener {
         // Calculate and show progress
         val fragmentWeight = section.calculateFragmentWeight(fragmentData)
         val percentage =
-            fragmentData.getPercentage(
-                pathProvider.getTotalSections(),
-                pathProvider.getSectionById(section.id).id,
-                index,
-                fragmentWeight
-            )
+                fragmentData.getPercentage(
+                        pathProvider.getTotalSections(),
+                        pathProvider.getSectionById(section.id).id,
+                        index,
+                        fragmentWeight
+                )
         progress.text = getString(R.string.percentage, percentage)
         animateProgress(percentage)
 
         // Show current path
-        path.text = getPath(fragmentData.forkTag)
+        path.text = fragmentData.pathType.pathName
         sectionText.text = getString(R.string.section, section.id)
 
         // Navigate to fragment
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         val fragment = fragmentData.initFragment()
         fragmentTransaction.replace(
-            R.id.container,
-            fragment,
-            fragmentData.tag
+                R.id.container,
+                fragment,
+                fragmentData.tag
         )
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-            .commit()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                .commit()
     }
 
-    private fun navigateToNextFragment(forkTag: String, nextIsNotProgress: Boolean = false) {
-        val nextTag = pathProvider.getNextFragmentTag(forkTag, nextIsNotProgress)
+    private fun navigateToNextFragment(pathType: PathType, nextIsNotProgress: Boolean = false) {
+        val nextTag = pathProvider.getNextFragmentTag(pathType, nextIsNotProgress)
         navigateToFragment(pathProvider.getSectionByFragmentTag(nextTag), nextTag)
     }
 
     override fun navigateToNextFragmentBase() {
-        navigateToNextFragment(BASE)
+        navigateToNextFragment(PathType.BASE)
     }
 
     override fun navigateToNextFragmentFork4() {
-        navigateToNextFragment(FORK_4)
+        navigateToNextFragment(PathType.FORK_4)
     }
 
     override fun navigateToNextFragmentFork7() {
-        navigateToNextFragment(FORK_7)
+        navigateToNextFragment(PathType.FORK_7)
     }
 
     override fun navigateToNextFragmentFork9() {
-        navigateToNextFragment(FORK_9)
+        navigateToNextFragment(PathType.FORK_9)
     }
 
     override fun navigateToNextFragmentFork9NoProgress() {
-        navigateToNextFragment(FORK_9_NOT_PROGRESS, true)
+        navigateToNextFragment(PathType.FORK_9_NOT_PROGRESS, true)
     }
 
     override fun finishSection() {
         val currentSection = pathProvider.getCurrentSection()
         val nextSection = pathProvider.getNextSection(currentSection.id)
         navigateToFragment(
-            nextSection,
-            pathProvider.getFirstFragmentTagBySectionId(nextSection.id)
+                nextSection,
+                pathProvider.getFirstFragmentTagBySectionId(nextSection.id)
         )
     }
 
@@ -103,19 +99,19 @@ class MainActivity: AppCompatActivity(), OnClickListener {
         val currentSection = pathProvider.getCurrentSection()
         val previous = pathProvider.getPreviousSection(currentSection.id)
         val lastFragmentTagFromPreviousSection =
-            pathProvider.getLastFragmentTagBySectionId(previous.id)
+                pathProvider.getLastFragmentTagBySectionId(previous.id)
         pathProvider.clearBreadcrumbFrom(lastFragmentTagFromPreviousSection)
         navigateToFragment(
-            previous,
-            lastFragmentTagFromPreviousSection
+                previous,
+                lastFragmentTagFromPreviousSection
         )
     }
 
     override fun skipNextSection() {
         val nextNextSectionId = pathProvider.getNextNextSectionId()
         navigateToFragment(
-            pathProvider.getSectionById(nextNextSectionId),
-            pathProvider.getFirstFragmentTagBySectionId(nextNextSectionId)
+                pathProvider.getSectionById(nextNextSectionId),
+                pathProvider.getFirstFragmentTagBySectionId(nextNextSectionId)
         )
     }
 
@@ -125,19 +121,8 @@ class MainActivity: AppCompatActivity(), OnClickListener {
 
     private fun animateProgress(progressValue: Double) {
         ObjectAnimator.ofInt(progressBar, "progress", progressValue.roundToInt())
-            .setDuration(500)
-            .start()
-    }
-
-    private fun getPath(forkTag: String?): String {
-        return when (forkTag) {
-            BASE -> "CAMINO BASE"
-            FORK_4 -> "FORK 4"
-            FORK_7 -> "FORK 7"
-            FORK_9 -> "FORK 9"
-            FORK_9_NOT_PROGRESS -> "FORK 9 - NO SUMA PROGRESO"
-            else -> ""
-        }
+                .setDuration(500)
+                .start()
     }
 
     override fun onBackPressed() {

@@ -1,4 +1,4 @@
-package com.dlgsoft.pathapp.fragments
+package com.dlgsoft.pathapp.ui.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -10,7 +10,7 @@ import android.widget.Button
 import com.dlgsoft.pathapp.OnClickListener
 import com.dlgsoft.pathapp.R
 
-class Fragment4: Fragment() {
+class Fragment1: Fragment() {
 
     private lateinit var listener: OnClickListener
 
@@ -23,7 +23,7 @@ class Fragment4: Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_4, container, false)
+        return inflater.inflate(R.layout.fragment_1, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,7 +34,7 @@ class Fragment4: Fragment() {
     }
 
     companion object {
-        const val TAG = "Fragment4"
-        fun newInstance() = Fragment4()
+        const val TAG = "Fragment1"
+        fun newInstance() = Fragment1()
     }
 }

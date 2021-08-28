@@ -45,19 +45,11 @@ class SectionsManager {
 
     fun getTotalSections() = sections.size
 
-    fun getFirstFragmentDataTag(forkTag: String) = sections.first().getFirstFragmentDataTag(forkTag)
+    fun getFirstFragmentDataTag(pathType: PathType) = sections.first().getFirstFragmentDataTag(pathType)
 
     fun getSectionByFragmentTag(fragmentTag: String) = sections.first { section ->
         section.hasFragmentByTag(fragmentTag)
     }
 
     fun getSectionById(sectionId: Int) = sections.first { it.id == sectionId }
-
-    companion object {
-        const val BASE = ""
-        const val FORK_4 = "Fork 4"
-        const val FORK_7 = "Fork 7"
-        const val FORK_9 = "Fork 9"
-        const val FORK_9_NOT_PROGRESS = "Fork 9 Not Progress"
-    }
 }

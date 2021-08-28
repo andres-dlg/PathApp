@@ -3,13 +3,13 @@ package com.dlgsoft.pathapp
 import androidx.fragment.app.Fragment
 
 data class FragmentData(
-    val fragment: Lazy<Fragment>,
-    val tag: String,
-    val forkTag: String?,
-    private val isNotProgress: Boolean = false
+        val fragment: Lazy<Fragment>,
+        val tag: String,
+        val pathType: PathType,
+        private val isNotProgress: Boolean = false
 ) {
     fun isFork(): Boolean {
-        return !forkTag.isNullOrEmpty()
+        return pathType != PathType.BASE
     }
 
     fun calculateFragmentWeight(fragmentsInFork: Int): Double {
@@ -19,10 +19,10 @@ data class FragmentData(
     }
 
     fun getPercentage(
-        sectionsQty: Int,
-        sectionNumber: Int,
-        fragmentPositionInSection: Int,
-        fragmentWeight: Double
+            sectionsQty: Int,
+            sectionNumber: Int,
+            fragmentPositionInSection: Int,
+            fragmentWeight: Double
     ): Double {
         var basePercentage = sectionNumber / sectionsQty.toDouble() * 100
         val comparator = fragmentWeight * fragmentPositionInSection

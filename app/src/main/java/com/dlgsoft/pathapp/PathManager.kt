@@ -1,10 +1,9 @@
 package com.dlgsoft.pathapp
 
-import com.dlgsoft.pathapp.SectionsManager.Companion.BASE
-import com.dlgsoft.pathapp.fragments.Fragment6
-import com.dlgsoft.pathapp.fragments.Fragment7
-import com.dlgsoft.pathapp.fragments.Fragment7A
-import com.dlgsoft.pathapp.fragments.Fragment8
+import com.dlgsoft.pathapp.ui.fragments.Fragment6
+import com.dlgsoft.pathapp.ui.fragments.Fragment7
+import com.dlgsoft.pathapp.ui.fragments.Fragment7A
+import com.dlgsoft.pathapp.ui.fragments.Fragment8
 
 class PathManager {
 
@@ -19,12 +18,12 @@ class PathManager {
     /**
      * Gets first element from breadcrumb. If the list is empty it returns an empty String
      */
-    private fun getCurrentFragmentTag(): String = if (breadcrumb.isEmpty()) BASE else breadcrumb[0]
+    private fun getCurrentFragmentTag(): String = if (breadcrumb.isEmpty()) "" else breadcrumb[0]
 
     /**
-     * Gets next fragment tag taking into account the [forkTag] parameter. Some scenarios:
+     * Gets next fragment tag taking into account the [pathType] parameter. Some scenarios:
      */
-    private fun getNextTag(forkTag: String, nextIsNotProgress: Boolean): String {
+    private fun getNextTag(pathType: PathType, nextIsNotProgress: Boolean): String {
         val currentFragmentTag = getCurrentFragmentTag()
         var currentSection: Section? = null
         var fragmentData: FragmentData? = null
@@ -34,29 +33,29 @@ class PathManager {
         }
         return when {
             // 1) First scenario. Returns first fragment tag from first section
-            currentFragmentTag.isEmpty() -> sectionsManager.getFirstFragmentDataTag(forkTag)
+            currentFragmentTag.isEmpty() -> sectionsManager.getFirstFragmentDataTag(pathType)
 
             // 2) Second scenario. If nextIsNotProgress is true returns first fragment with no
             // progress in current section
-            nextIsNotProgress -> currentSection!!.getFirstFragmentDataTag(forkTag)
+            nextIsNotProgress -> currentSection!!.getFirstFragmentDataTag(pathType)
 
             // 3) Third scenario. If current fragment is not a fork returns first fragment of
             // next section
             !fragmentData!!.isFork() && !nextIsNotProgress -> getNextSection(currentSection!!.id).getFirstFragmentDataTag(
-                forkTag
+                    pathType
             )
 
             // 4) Fourth scenario. If current fragment is a fork but it is the last fragment
             // of the fork, return first fragment of next section
-            currentSection!!.isLastFragmentInFork(forkTag, currentFragmentTag) -> getNextSection(
-                currentSection.id
-            ).getFirstFragmentDataTag(BASE)
+            currentSection!!.isLastFragmentInFork(pathType, currentFragmentTag) -> getNextSection(
+                    currentSection.id
+            ).getFirstFragmentDataTag(PathType.BASE)
 
             // 5) Fifth scenario. If current fragment is a fork but it is not the last fragment
             // of the fork, return next fragment in the fork
             else -> {
                 val nextFragmentData =
-                    currentSection.getNextFragmentInFork(forkTag, currentFragmentTag)
+                        currentSection.getNextFragmentInFork(pathType, currentFragmentTag)
                 nextFragmentData.tag
             }
         }
@@ -90,32 +89,32 @@ class PathManager {
      * Returns next section based on [sectionId]
      */
     fun getNextSection(sectionId: Int) =
-        sectionsManager.findNextSectionFromSectionId(sectionId)
+            sectionsManager.findNextSectionFromSectionId(sectionId)
 
     /**
      * Returns previous section based on [sectionId]
      */
     fun getPreviousSection(sectionId: Int) =
-        sectionsManager.findPreviousSectionFromSectionId(sectionId)
+            sectionsManager.findPreviousSectionFromSectionId(sectionId)
 
     /**
      * Returns a section based on [fragmentTag]. For example: If the fragment with id = 5 is in the
      * section = 2, this method will return the tag corresponding to section = 2
      */
     fun getSectionByFragmentTag(fragmentTag: String) =
-        sectionsManager.getSectionByFragmentTag(fragmentTag)
+            sectionsManager.getSectionByFragmentTag(fragmentTag)
 
     /**
      * Returns the first fragment of the section with id = [sectionId]
      */
     fun getFirstFragmentTagBySectionId(sectionId: Int) =
-        getSectionById(sectionId).getFirstFragmentDataTag(BASE)
+            getSectionById(sectionId).getFirstFragmentDataTag(PathType.BASE)
 
     /**
      * Returns the last fragment of the section with id = [sectionId]
      */
     fun getLastFragmentTagBySectionId(sectionId: Int) =
-        getSectionById(sectionId).getLastFragmentDataTag(BASE)
+            getSectionById(sectionId).getLastFragmentDataTag(PathType.BASE)
 
     /**
      * Returns the section with id = [sectionId]
@@ -123,17 +122,17 @@ class PathManager {
     fun getSectionById(sectionId: Int) = sectionsManager.getSectionById(sectionId)
 
     /**
-     * Returns next fragment based on [forkTag]
+     * Returns next fragment based on [pathType]
      */
-    fun getNextFragmentTag(forkTag: String, nextIsNotProgress: Boolean): String {
-        return getNextTag(forkTag, nextIsNotProgress)
+    fun getNextFragmentTag(pathType: PathType, nextIsNotProgress: Boolean): String {
+        return getNextTag(pathType, nextIsNotProgress)
     }
 
     /**
      * Returns a Pair containing a fragment and its index within its section
      */
     fun getFragmentAndIndex(tag: String): Pair<FragmentData, Int> =
-        sectionsManager.getFragmentAndIndex(tag)
+            sectionsManager.getFragmentAndIndex(tag)
 
     /**
      * Returns current section based on current fragment tag
