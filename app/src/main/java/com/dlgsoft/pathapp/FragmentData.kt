@@ -6,10 +6,16 @@ data class FragmentData(
     val fragment: Lazy<Fragment>,
     val tag: String,
     val forkTag: String?,
-    val isNotProgress: Boolean = false
+    private val isNotProgress: Boolean = false
 ) {
     fun isFork(): Boolean {
         return !forkTag.isNullOrEmpty()
+    }
+
+    fun calculateFragmentWeight(fragmentsInFork: Int): Double {
+        if (isNotProgress) return 0.0
+        if (!isFork()) return 1.0
+        return 1.0 / fragmentsInFork
     }
 
     fun getPercentage(
@@ -25,4 +31,6 @@ data class FragmentData(
         }
         return basePercentage
     }
+
+    fun initFragment() = fragment.value
 }

@@ -55,7 +55,7 @@ class MainActivity: AppCompatActivity(), OnClickListener {
 
         // Navigate to fragment
         val fragmentTransaction = supportFragmentManager.beginTransaction()
-        val fragment = fragmentData.fragment.value
+        val fragment = fragmentData.initFragment()
         fragmentTransaction.replace(
             R.id.container,
             fragment,

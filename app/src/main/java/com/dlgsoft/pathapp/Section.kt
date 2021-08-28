@@ -1,8 +1,8 @@
 package com.dlgsoft.pathapp
 
 data class Section(
-    val id: Int,
-    val fragments: List<FragmentData>
+        val id: Int,
+        private val fragments: List<FragmentData>
 ) {
     private fun getFirstFragmentData(forkTag: String) = fragments.first { forkTag == it.forkTag }
 
@@ -25,9 +25,18 @@ data class Section(
     }
 
     fun calculateFragmentWeight(fragmentData: FragmentData): Double {
-        if (fragmentData.isNotProgress) return 0.0
-        if (!fragmentData.isFork()) return 1.0
         val fragmentsInFork = fragments.count { it.forkTag == fragmentData.forkTag }
-        return 1.0 / fragmentsInFork
+        return fragmentData.calculateFragmentWeight(fragmentsInFork)
+    }
+
+    fun hasFragmentByTag(fragmentTag: String) = fragments.any { it.tag == fragmentTag }
+
+    fun getFragmentByTag(fragmentTag: String): Pair<FragmentData, Int>? {
+        fragments.forEachIndexed { index, fragmentData ->
+            if (fragmentData.tag == fragmentTag) {
+                return Pair(fragmentData, index)
+            }
+        }
+        return null
     }
 }

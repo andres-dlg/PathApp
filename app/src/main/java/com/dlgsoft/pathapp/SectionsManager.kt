@@ -26,19 +26,18 @@ class SectionsManager {
         }
     }
 
-    fun getNextNextSectionId(currentSectionId: Int): Int {
+    fun getAfterNextSectionId(currentSectionId: Int): Int {
         val currentSectionIndex = sections.indexOfFirst { it.id == currentSectionId }
         return sections[currentSectionIndex + 2].id
     }
 
-    fun getFragmentAndIndex(tag: String): Pair<FragmentData, Int> {
+    fun getFragmentAndIndex(fragmentTag: String): Pair<FragmentData, Int> {
         lateinit var pair: Pair<FragmentData, Int>
         sections.forEach { section ->
-            section.fragments.forEachIndexed { index, fragmentData ->
-                if (fragmentData.tag == tag) {
-                    pair = Pair(fragmentData, index)
-                    return@forEach
-                }
+            val tempPair = section.getFragmentByTag(fragmentTag)
+            if (tempPair != null) {
+                pair = tempPair
+                return@forEach
             }
         }
         return pair
@@ -49,7 +48,7 @@ class SectionsManager {
     fun getFirstFragmentDataTag(forkTag: String) = sections.first().getFirstFragmentDataTag(forkTag)
 
     fun getSectionByFragmentTag(fragmentTag: String) = sections.first { section ->
-        section.fragments.any { it.tag == fragmentTag }
+        section.hasFragmentByTag(fragmentTag)
     }
 
     fun getSectionById(sectionId: Int) = sections.first { it.id == sectionId }

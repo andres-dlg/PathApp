@@ -150,7 +150,7 @@ class PathManager {
 
     fun getNextNextSectionId(): Int {
         val currentSectionId = getCurrentSection().id
-        return sectionsManager.getNextNextSectionId(currentSectionId)
+        return sectionsManager.getAfterNextSectionId(currentSectionId)
     }
 
     fun getTotalSections() = sectionsManager.getTotalSections()
